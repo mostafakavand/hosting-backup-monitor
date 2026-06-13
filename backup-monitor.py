@@ -45,28 +45,6 @@ class TestBackupChecker:
             import traceback
             logging.error(traceback.format_exc()) # لاگ کامل خطا برای دیباگ
             raise Exception("Could not initialize Chrome driver.")
-
-    
-    async def send_Bale_message(self, message, max_retries=3):
-        """Send message to Bale channel using bot with retry mechanism"""
-        url = f"https://tapi.bale.ai/bot{self.bot_token_bale}/sendMessage"
-        data = {
-            "chat_id": self.channel_id_bale,
-            "text": message,
-            "parse_mode": "HTML"
-        }
-        
-        for attempt in range(max_retries):
-            try:
-                response = requests.post(url, data=data, timeout=10)
-                response.raise_for_status()
-                return
-            except requests.exceptions.RequestException as e:
-                if attempt == max_retries - 1:
-                    logging.error(f"Error sending Bale message after {max_retries} attempts: {str(e)}")
-                else:
-                    logging.warning(f"Attempt {attempt + 1} failed: {str(e)}")
-                    await asyncio.sleep(2)  # Wait before retrying
     
     async def check_backup_status(self):
         """Check backup status for May 1st on all servers"""
