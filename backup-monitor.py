@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from dotenv import load_dotenv
 import requests
 import logging
-
+from models import BackupDetail
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -185,14 +185,16 @@ class TestBackupChecker:
                                         logging.info(f"Execution Time: {execution_time}")
                                         logging.info(f"Status: {status}")
                                         
-                                        backup_details.append({
-                                            'process_id': process_id,
-                                            'type': backup_type,
-                                            'start_time': start_time,
-                                            'end_time': end_time,
-                                            'execution_time': execution_time,
-                                            'status': status
-                                        })
+                                        backup_details.append(
+                                            BackupDetail(
+                                                process_id=process_id,
+                                                type=backup_type,
+                                                start_time=start_time,
+                                                end_time=end_time,
+                                                execution_time=execution_time,
+                                                status=status,
+                                            )
+                                        )
                                     else:
                                         logging.info(f"Skipping row {index} - Not a backup entry (Type: {backup_type})")
                             except Exception as e:
@@ -209,17 +211,17 @@ class TestBackupChecker:
                         for detail in backup_details:
                             # Format status with appropriate emojis
                             status_emoji = ""
-                            if detail['status'] == "Completed":
+                            if detail.status == "Completed":
                                 status_emoji = "✅ ✅ ✅"
-                            elif detail['status'] == "Partially completed":
+                            elif detail.process_id == "Partially completed":
                                 status_emoji = "⚠️ ⚠️ ⚠️"
                             else:
                                 status_emoji = "❌ ❌ ❌"
                             
-                            message += f"Start Time: {detail['start_time']}\n"
-                            message += f"End Time: {detail['end_time']}\n"
-                            message += f"Execution Time: {detail['execution_time']}\n"
-                            message += f"Status: * {detail['status']} * {status_emoji}\n"
+                            message += f"Start Time: {detail.start_time}\n"
+                            message += f"End Time: {detail.end_time}\n"
+                            message += f"Execution Time: {detail.execution_time}\n"
+                            message += f"Status: * {detail.status} * {status_emoji}\n"
                             message += "-------------------\n"
                         logging.info("Prepared message with backup details")
                     else:
