@@ -16,22 +16,6 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 load_dotenv('.env.example')
 
 class TestBackupChecker:
-    def __init__(self):
-        self.username = os.getenv('WHM_USERNAME')
-        self.passwords = {
-           os.getenv('SERVERS1').replace('https://', '').replace('/', ''): os.getenv('SERVERS1_PASSWORD'),
-           os.getenv('SERVERS2').replace('https://', '').replace('/', ''): os.getenv('SERVERS2_PASSWORD'),
-           os.getenv('SERVERS3').replace('https://', '').replace('/', ''): os.getenv('SERVERS3_PASSWORD')
-       }
-        self.servers = [
-            os.getenv('SERVERS1').replace('https://', '').replace('/', ''),
-            os.getenv('SERVERS2').replace('https://', '').replace('/', ''),
-            os.getenv('SERVERS3').replace('https://', '').replace('/', '')
-        ]
-        
-        self.channel_id_bale = os.getenv('BALE_CHANNEL_ID')
-        self.bot_token_bale = os.getenv('BALE_BOT_TOKEN')
-        
     def setup_driver(self):
         """Initialize and return a Chrome WebDriver with a simple, direct approach"""
         options = webdriver.ChromeOptions()
@@ -50,9 +34,6 @@ class TestBackupChecker:
         options.add_argument('--disable-background-timer-throttling')
         options.add_argument('--disable-backgrounding-occluded-windows')
         options.add_argument('--disable-renderer-backgrounding')
-        
-        from selenium.webdriver.chrome.service import Service
-        # service = Service(executable_path='/usr/bin/chromedriver')
         
         try:
             logging.info("Initializing Chrome with explicit chromedriver path...")
